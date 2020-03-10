@@ -37,7 +37,7 @@ export class CliFlow implements IPluginMiddleware<any> {
   callback: Handler = async (req, res, next) => {
     try {
       const code = await this.provider.getCode(req)
-      const token = await this.provider.getToken(code)
+      const token = await this.provider.getToken(code, pluginCallbackeUrl)
       const username = await this.provider.getUsername(token)
       const groups = await this.provider.getGroups(token)
 
