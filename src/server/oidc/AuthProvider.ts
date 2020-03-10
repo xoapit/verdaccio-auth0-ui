@@ -59,9 +59,9 @@ export class OpenIDConnectAuthProvider implements AuthProvider {
     return JSON.stringify(this.discoveredClient.callbackParams(req.url))
   }
 
-  async getToken(code: string): Promise<string> {
+  async getToken(code: string, callbackUrl?: string): Promise<string> {
     const params = JSON.parse(code) as CallbackParamsType;
-    const tokenSet = await this.discoveredClient.callback(undefined, params);
+    const tokenSet = await this.discoveredClient.callback(callbackUrl, params);
 
     if (tokenSet.access_token !== undefined) {
       return tokenSet.access_token
