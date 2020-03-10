@@ -14,6 +14,10 @@ export interface PluginConfig {
   "client-id": string,
   "client-secret": string,
   "enterprise-origin"?: string,
+
+  "oidc-issuer-url"?: string,
+  "oidc-username-property"?: string,
+  "oidc-groups-property"?: string,
 }
 
 export type PluginConfigKey = keyof PluginConfig
