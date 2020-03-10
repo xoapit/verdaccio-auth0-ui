@@ -2,9 +2,13 @@ import { Request } from "express"
 import { Issuer, Client, CallbackParamsType } from 'openid-client'
 
 import { AuthProvider } from "../plugin/AuthProvider"
-import { Config } from "../plugin/Config";
+import { Config, getConfig } from "../plugin/Config";
 
 export class OpenIDConnectAuthProvider implements AuthProvider {
+  private readonly issuerUrl = getConfig(this.config, "oidc-issuer-url") || ""
+  private readonly usernameProperty = getConfig(this.config, "oidc-username-property") || "nickname"
+  private readonly groupsProperty = getConfig(this.config, "oidc-groups-property") || "groups"
+
   private client?: Client;
 
   constructor(
@@ -12,18 +16,6 @@ export class OpenIDConnectAuthProvider implements AuthProvider {
   ) {
     // not sure of a better way to do this:
     this.discoverClient()
-  }
-
-  private get issuerUrl(): string {
-    return this.config["oidc-issuer-url"] || ''
-  }
-
-  private get usernameProperty(): string {
-    return this.config["oidc-username-property"] || "nickname"
-  }
-
-  private get groupsProperty(): string {
-    return this.config["oidc-groups-property"] || "groups"
   }
 
   private get discoveredClient(): Client {
