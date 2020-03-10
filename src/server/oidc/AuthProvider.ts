@@ -8,6 +8,8 @@ export class OpenIDConnectAuthProvider implements AuthProvider {
   private readonly issuerUrl = getConfig(this.config, "oidc-issuer-url") || ""
   private readonly usernameProperty = getConfig(this.config, "oidc-username-property") || "nickname"
   private readonly groupsProperty = getConfig(this.config, "oidc-groups-property") || "groups"
+  private readonly clientId = getConfig(this.config, "client-id")
+  private readonly clientSecret = getConfig(this.config, "client-secret")
 
   private client?: Client;
 
@@ -29,8 +31,8 @@ export class OpenIDConnectAuthProvider implements AuthProvider {
   private async discoverClient() {
     const issuer = await Issuer.discover(this.issuerUrl)
     const client = new issuer.Client({
-      client_id: this.config["client-id"],
-      client_secret: this.config["client-secret"],
+      client_id: this.clientId,
+      client_secret: this.clientSecret,
       response_types: ["code"],
     })
     this.client = client
