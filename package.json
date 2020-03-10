@@ -1,5 +1,5 @@
 {
-  "name": "verdaccio-github-oauth-ui",
+  "name": "verdaccio-oidc-ui",
   "version": "2.2.2",
   "keywords": [
     "github",
