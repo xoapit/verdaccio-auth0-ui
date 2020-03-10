@@ -1,32 +1,36 @@
 <h1 align="center">
-  📦🔐 Verdaccio GitHub OAuth - With UI Support
+  📦🔐 Verdaccio OpenID Connect - With UI Support
 </h1>
 
+<h2 align="center">
+  Fork of <a href="https://github.com/n4bb12/verdaccio-oidc-ui">n4bb12/verdaccio-oidc-ui</a>
+</h2>
+
 <p align="center">
-  A GitHub OAuth Plugin for Verdaccio – <a href="https://www.verdaccio.org">https://www.verdaccio.org</a>
+  An OpenID Connect Plugin for Verdaccio – <a href="https://www.verdaccio.org">https://www.verdaccio.org</a>
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/verdaccio-github-oauth-ui">
-    <img alt="Version" src="https://flat.badgen.net/npm/v/verdaccio-github-oauth-ui?icon=npm">
+  <a href="https://www.npmjs.com/package/verdaccio-oidc-ui">
+    <img alt="Version" src="https://flat.badgen.net/npm/v/verdaccio-oidc-ui?icon=npm">
   </a>
-  <a href="https://raw.githubusercontent.com/n4bb12/verdaccio-github-oauth-ui/master/LICENSE">
-    <img alt="License" src="https://flat.badgen.net/github/license/n4bb12/verdaccio-github-oauth-ui?icon=github">
+  <a href="https://raw.githubusercontent.com/TuneZilla-Development/verdaccio-oidc-ui/master/LICENSE">
+    <img alt="License" src="https://flat.badgen.net/github/license/TuneZilla-Development/verdaccio-oidc-ui?icon=github">
   </a>
-  <a href="https://github.com/n4bb12/verdaccio-github-oauth-ui/issues/new/choose">
+  <a href="https://github.com/TuneZilla-Development/verdaccio-oidc-ui/issues/new/choose">
     <img alt="Issues" src="https://flat.badgen.net/badge/github/create issue/pink?icon=github">
   </a>
-  <a href="https://circleci.com/gh/n4bb12/workflows/verdaccio-github-oauth-ui">
-    <img alt="CircleCI" src="https://flat.badgen.net/circleci/github/n4bb12/verdaccio-github-oauth-ui/master?icon=circleci">
+  <a href="https://circleci.com/gh/n4bb12/workflows/verdaccio-oidc-ui">
+    <img alt="CircleCI" src="https://flat.badgen.net/circleci/github/TuneZilla-Development/verdaccio-oidc-ui/master?icon=circleci">
   </a>
-  <a href="https://codecov.io/github/n4bb12/verdaccio-github-oauth-ui">
-    <img alt="Coverage" src="https://flat.badgen.net/codecov/c/github/n4bb12/verdaccio-github-oauth-ui?icon=codecov">
+  <a href="https://codecov.io/github/TuneZilla-Development/verdaccio-oidc-ui">
+    <img alt="Coverage" src="https://flat.badgen.net/codecov/c/github/TuneZilla-Development/verdaccio-oidc-ui?icon=codecov">
   </a>
-  <a href="https://lgtm.com/projects/g/n4bb12/verdaccio-github-oauth-ui/alerts">
-    <img alt="LGTM" src="https://flat.badgen.net/lgtm/alerts/g/n4bb12/verdaccio-github-oauth-ui?icon=lgtm">
+  <a href="https://lgtm.com/projects/g/TuneZilla-Development/verdaccio-oidc-ui/alerts">
+    <img alt="LGTM" src="https://flat.badgen.net/lgtm/alerts/g/TuneZilla-Development/verdaccio-oidc-ui?icon=lgtm">
   </a>
-  <a href="https://david-dm.org/n4bb12/verdaccio-github-oauth-ui">
-    <img alt="Dependencies" src="https://flat.badgen.net/david/dep/n4bb12/verdaccio-github-oauth-ui?icon=npm">
+  <a href="https://david-dm.org/TuneZilla-Development/verdaccio-oidc-ui">
+    <img alt="Dependencies" src="https://flat.badgen.net/david/dep/TuneZilla-Development/verdaccio-oidc-ui?icon=npm">
   </a>
 </p>
 
@@ -34,12 +38,12 @@
 
 <img src="screenshots/authorize.png" align="right" width="270"/>
 
-This is a Verdaccio plugin that offers GitHub OAuth integragtion for both the browser and the command line.
+This is a Verdaccio plugin that offers OpenID Connect integration for both the browser and the command line.
 
 ### Features
 
-- UI integration with fully functional login and logout. When clicking the login button the user is redirected to GitHub and returns with a working session.
-- Updated usage info and working copy-to-clipboard for setup commands. 
+- UI integration with fully functional login and logout. When clicking the login button the user is redirected to identity provider and returns with a working session.
+- Updated usage info and working copy-to-clipboard for setup commands.
 - A small CLI for quick-and-easy configuration.
 
 ### Compatibility
@@ -53,12 +57,12 @@ This is a Verdaccio plugin that offers GitHub OAuth integragtion for both the br
 ### Install
 
 ```
-$ npm install verdaccio-github-oauth-ui
+$ npm install verdaccio-oidc-ui
 ```
 
 ### GitHub Config
 
-- Create an OAuth app at https://github.com/settings/developers
+- Create an OpenID Connect app at your provider of choice, like https://docs.gitlab.com/ee/integration/openid_connect_provider.html
 - The callback URL should be `YOUR_REGISTRY_URL/-/oauth/callback`
 
 ![](screenshots/github-app.png)
@@ -69,15 +73,17 @@ Merge the below options with your existing Verdaccio config:
 
 ```yml
 middlewares:
-  github-oauth-ui:
+  oidc-ui:
     enabled: true
 
 auth:
-  github-oauth-ui:
-    org: GITHUB_ORG
-    client-id: GITHUB_CLIENT_ID
-    client-secret: GITHUB_CLIENT_SECRET
-    enterprise-origin: GITHUB_ENTERPRISE_ORIGIN
+  oidc-ui:
+    org: REQUIRED_GROUP
+    client-id: OIDC_CLIENT_ID
+    client-secret: OIDC_CLIENT_SECRET
+    oidc-issuer-url: https://gitlab.com
+    oidc-username-property: nickname
+    oidc-groups-property: groups
 
 url_prefix: YOUR_REGISTRY_URL
 ```
@@ -87,19 +93,32 @@ url_prefix: YOUR_REGISTRY_URL
 
 #### `org`
 
-Users within this org will be able to authenticate.
+Users within this group will be able to authenticate.
 
 #### `client-id` and `client-secret`
 
 These values can be obtained from GitHub OAuth app page at https://github.com/settings/developers.
 
-#### `enterprise-origin` (optional)
+### `oidc-issuer-url`
 
-Set this if you are using GitHub Enterprise. Example: `https://hostname`
+The URL of your identity provider. If using gitlab.com, it would be https://gitlab.com
+
+### `oidc-username-property` (optional)
+
+The userinfo key that represents a username with your identity provider. Defaults to `nickname`
+
+See https://docs.gitlab.com/ee/integration/openid_connect_provider.html#shared-information
+
+### `oidc-groups-property` (optional)
+
+The userinfo key that represents groups with your identity provider. Defaults to `groups`
+
+See https://docs.gitlab.com/ee/integration/openid_connect_provider.html#shared-information
 
 #### `url_prefix` (optional)
 
 If configured, it must match `YOUR_REGISTRY_URL`. See [GitHub Config](#GitHub-Config).
+
 
 ### Proxy Config
 
@@ -133,7 +152,7 @@ If you accidentally skipped this step, go to https://github.com/settings/applica
 The easiest way to configure npm is to use this short command:
 
 ```
-$ npx verdaccio-github-oauth-ui --registry http://localhost:4873
+$ npx verdaccio-oidc-ui --registry http://localhost:4873
 ```
 
 #### Option B) Copy commands from the UI
