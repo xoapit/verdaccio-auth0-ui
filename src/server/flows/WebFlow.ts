@@ -10,7 +10,7 @@ import { Verdaccio } from "../verdaccio"
 
 export const errorPage = buildStatusPage(`
   <h1>Access Denied</h1>
-  <p>You are not a member of the required org.</p>
+  <p>Not enough permissions to access registry.</p>
   <p><a href="/">Go back</a></p>
 `)
 

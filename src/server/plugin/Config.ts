@@ -15,9 +15,10 @@ export interface PluginConfig {
   "client-secret": string,
   "enterprise-origin"?: string,
 
+  "oidc-audience"?: string,
   "oidc-issuer-url"?: string,
-  "oidc-username-property"?: string,
-  "oidc-groups-property"?: string,
+  "oidc-userinfo-nickname-property"?: string,
+  "oidc-access-token-permissions-property"?: string,
 }
 
 export type PluginConfigKey = keyof PluginConfig
@@ -69,4 +70,5 @@ export function validateConfig(config: Config) {
   ensurePropExists(config, "org")
   ensurePropExists(config, "client-id")
   ensurePropExists(config, "client-secret")
+  ensurePropExists(config, "oidc-issuer-url")
 }

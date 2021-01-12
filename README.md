@@ -1,38 +1,6 @@
 <h1 align="center">
-  📦🔐 Verdaccio OpenID Connect - With UI Support
+  📦🔐 Verdaccio Auth0 Connect - With UI Support
 </h1>
-
-<h2 align="center">
-  Fork of <a href="https://github.com/n4bb12/verdaccio-oidc-ui">n4bb12/verdaccio-oidc-ui</a>
-</h2>
-
-<p align="center">
-  An OpenID Connect Plugin for Verdaccio – <a href="https://www.verdaccio.org">https://www.verdaccio.org</a>
-</p>
-
-<p align="center">
-  <a href="https://www.npmjs.com/package/verdaccio-oidc-ui">
-    <img alt="Version" src="https://flat.badgen.net/npm/v/verdaccio-oidc-ui?icon=npm">
-  </a>
-  <a href="https://raw.githubusercontent.com/TuneZilla-Development/verdaccio-oidc-ui/master/LICENSE">
-    <img alt="License" src="https://flat.badgen.net/github/license/TuneZilla-Development/verdaccio-oidc-ui?icon=github">
-  </a>
-  <a href="https://github.com/TuneZilla-Development/verdaccio-oidc-ui/issues/new/choose">
-    <img alt="Issues" src="https://flat.badgen.net/badge/github/create issue/pink?icon=github">
-  </a>
-  <a href="https://circleci.com/gh/n4bb12/workflows/verdaccio-oidc-ui">
-    <img alt="CircleCI" src="https://flat.badgen.net/circleci/github/TuneZilla-Development/verdaccio-oidc-ui/master?icon=circleci">
-  </a>
-  <a href="https://codecov.io/github/TuneZilla-Development/verdaccio-oidc-ui">
-    <img alt="Coverage" src="https://flat.badgen.net/codecov/c/github/TuneZilla-Development/verdaccio-oidc-ui?icon=codecov">
-  </a>
-  <a href="https://lgtm.com/projects/g/TuneZilla-Development/verdaccio-oidc-ui/alerts">
-    <img alt="LGTM" src="https://flat.badgen.net/lgtm/alerts/g/TuneZilla-Development/verdaccio-oidc-ui?icon=lgtm">
-  </a>
-  <a href="https://david-dm.org/TuneZilla-Development/verdaccio-oidc-ui">
-    <img alt="Dependencies" src="https://flat.badgen.net/david/dep/TuneZilla-Development/verdaccio-oidc-ui?icon=npm">
-  </a>
-</p>
 
 ## About
 
@@ -57,13 +25,25 @@ This is a Verdaccio plugin that offers OpenID Connect integration for both the b
 ### Install
 
 ```
-$ npm install verdaccio-oidc-ui
+$ npm install verdaccio-auth0-ui
 ```
 
-### GitHub Config
+### Auth0 Config
 
-- Create an OpenID Connect app at your provider of choice, like https://docs.gitlab.com/ee/integration/openid_connect_provider.html
-- The callback URL should be `YOUR_REGISTRY_URL/-/oauth/callback`
+On Auth0 management page:
+
+- Create an App "Regular web application" with name `NPM Registry`
+  - Allowed Callback URLs `YOUR_REGISTRY_URL/-/oauth/callback`
+  - Allowed Logout URLs `YOUR_REGISTRY_URL`
+- Create an API endpoint. Set API Audience to `https://yourprivateregistry.com/`
+  - Enable RBAC = on
+  - Add Permissions in the Access Token = on
+  - Allow Skipping User Consent = on
+  - Allow Offline Access = on
+  - On tab Permissions add `read:packages` and `write:packages` permissions
+- Create a User Role.
+  - Assign both permissions of `https://yourprivateregistry.com/` to that Role.
+- Assign created Role to a User.
 
 ![](screenshots/github-app.png)
 
@@ -73,17 +53,19 @@ Merge the below options with your existing Verdaccio config:
 
 ```yml
 middlewares:
-  oidc-ui:
+  oidc-auth0-ui:
     enabled: true
 
 auth:
-  oidc-ui:
-    org: REQUIRED_GROUP
+  oidc-auth0-ui:
+    org: REQUIRED_PERMISSION
     client-id: OIDC_CLIENT_ID
     client-secret: OIDC_CLIENT_SECRET
-    oidc-issuer-url: https://gitlab.com
-    oidc-username-property: nickname
-    oidc-groups-property: groups
+
+    oidc-issuer-url: https://yourorg.eu.auth0.com
+    oidc-audience: https://yourprivateregistry.com/
+    oidc-userinfo-nickname-property: nickname
+    oidc-access-token-permissions-property: permissions
 
 url_prefix: YOUR_REGISTRY_URL
 ```
@@ -97,23 +79,23 @@ Users within this group will be able to authenticate.
 
 #### `client-id` and `client-secret`
 
-These values can be obtained from GitHub OAuth app page at https://github.com/settings/developers.
+These values can be obtained from Auth0 App page.
 
 ### `oidc-issuer-url`
 
-The URL of your identity provider. If using gitlab.com, it would be https://gitlab.com
+The URL of your Auth0 endpoint. E.g. https://yourorg.eu.auth0.com
 
-### `oidc-username-property` (optional)
+### `oidc-audience` (optional)
+
+API Audience of your npm registry defined in Auth0. E.g. `https://yourprivateregistry.com/`
+
+### `oidc-userinfo-nickname-property` (optional)
 
 The userinfo key that represents a username with your identity provider. Defaults to `nickname`
 
-See https://docs.gitlab.com/ee/integration/openid_connect_provider.html#shared-information
+### `oidc-access-token-permissions-property` (optional)
 
-### `oidc-groups-property` (optional)
-
-The userinfo key that represents groups with your identity provider. Defaults to `groups`
-
-See https://docs.gitlab.com/ee/integration/openid_connect_provider.html#shared-information
+Permissions property stored in `access_token`. Defaults to `permissions`
 
 #### `url_prefix` (optional)
 
@@ -152,7 +134,7 @@ If you accidentally skipped this step, go to https://github.com/settings/applica
 The easiest way to configure npm is to use this short command:
 
 ```
-$ npx verdaccio-oidc-ui --registry http://localhost:4873
+$ npx verdaccio-auth0-ui --registry http://localhost:4873
 ```
 
 #### Option B) Copy commands from the UI

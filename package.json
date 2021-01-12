@@ -1,5 +1,5 @@
 {
-  "name": "verdaccio-oidc-ui",
+  "name": "verdaccio-auth0-ui",
   "version": "2.2.7",
   "keywords": [
     "github",
@@ -11,9 +11,9 @@
     "registry",
     "verdaccio"
   ],
-  "homepage": "https://github.com/TuneZilla-Development/verdaccio-oidc-ui/blob/master/README.md",
-  "bugs": "https://github.com/TuneZilla-Development/verdaccio-oidc-ui/issues",
-  "repository": "github:TuneZilla-Development/verdaccio-oidc-ui",
+  "homepage": "https://github.com/matterway/verdaccio-auth0-ui/blob/master/README.md",
+  "bugs": "https://github.com/matterway/verdaccio-auth0-ui/issues",
+  "repository": "github:matterway/verdaccio-auth0-ui",
   "license": "MIT",
   "author": "Abraham Schilling",
   "files": [
@@ -21,7 +21,7 @@
   ],
   "main": "dist/server.js",
   "bin": {
-    "verdaccio-oidc-ui": "dist/cli.js"
+    "verdaccio-auth0-ui": "dist/cli.js"
   },
   "scripts": {
     "build": "bash run build",
