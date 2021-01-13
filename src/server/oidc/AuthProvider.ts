@@ -74,7 +74,10 @@ export class OpenIDConnectAuthProvider implements AuthProvider {
       return username
     }
 
-    throw new Error(`Could not grab username using the ${this.userinfoUsernameProperty} property`)
+    throw Object.assign(
+      new Error(`Could not grab username using the ${this.userinfoUsernameProperty} property`),
+      {userinfo, token},
+    )
   }
 
   async getGroups(token: string): Promise<string[]> {
@@ -84,12 +87,16 @@ export class OpenIDConnectAuthProvider implements AuthProvider {
     const tokenSet = new TokenSet({
       id_token: token,
     })
-    const groups = tokenSet.claims()[this.accessTokenPermissionsProperty] as string[]|undefined
+    const claims = tokenSet.claims()
+    const groups = claims[this.accessTokenPermissionsProperty] as string[]|undefined
 
     if (groups !== undefined) {
       return groups
     }
 
-    throw new Error(`Could not grab groups using the ${this.accessTokenPermissionsProperty} property`)
+    throw Object.assign(
+      new Error(`Could not grab groups using the ${this.accessTokenPermissionsProperty} property`),
+      {claims, token},
+    )
   }
 }
