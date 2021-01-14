@@ -1,5 +1,5 @@
 import { IPluginMiddleware } from "@verdaccio/types"
-import { Application, Handler } from "express"
+import { Application, Handler, Request } from "express"
 
 import { logger } from "../../logger"
 import { AuthCore } from "../plugin/AuthCore"
@@ -37,7 +37,7 @@ export class CliFlow implements IPluginMiddleware<any> {
   callback: Handler = async (req, res, next) => {
     try {
       const code = await this.provider.getCode(req)
-      const token = await this.provider.getToken(code, pluginCallbackeUrl)
+      const token = await this.provider.getToken(code, this.getRedirectUrl(req))
       const username = await this.provider.getUsername(token)
       const groups = await this.provider.getGroups(token)
 
@@ -54,4 +54,14 @@ export class CliFlow implements IPluginMiddleware<any> {
     }
   }
 
+  private getRequestOrigin(req: Request) {
+    const protocal = req.get("X-Forwarded-Proto") || req.protocol
+    return protocal + "://" + req.get("host")
+  }
+
+  private getRedirectUrl(req: Request): string {
+    const baseUrl = this.verdaccio.baseUrl || this.getRequestOrigin(req)
+    const path = WebFlow.getCallbackPath(providerId)
+    return baseUrl + path
+  }
 }
