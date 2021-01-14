@@ -33,8 +33,6 @@ const createAuthProvider = (config: Config): AuthProvider => {
  * Implements the verdaccio plugin interfaces.
  */
 export class Plugin implements IPluginMiddleware<any>, IPluginAuth<any> {
-
-  private readonly requiredGroup = getConfig(this.config, "org")
   private readonly provider = createAuthProvider(this.config)
   private readonly cache = new Cache(this.provider)
   private readonly verdaccio = new Verdaccio(this.config)
@@ -70,7 +68,7 @@ export class Plugin implements IPluginMiddleware<any>, IPluginAuth<any> {
     const groups = await this.cache.getGroups(token)
 
     if (this.core.canAuthenticate(username, groups)) {
-      callback(null, [this.requiredGroup])
+      callback(null, groups)
     } else {
       callback(null, false)
     }

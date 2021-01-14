@@ -18,7 +18,7 @@ describe("AuthCore", () => {
     })
 
     it("contains username, uiToken and npmToken", async () => {
-      const url = await core.createUiCallbackUrl(testUsername, testOAuthToken)
+      const url = await core.createUiCallbackUrl(testUsername, [], testOAuthToken)
       const { username, uiToken, npmToken } = parse(url, true).query
 
       expect(username).toBe(testUsername)

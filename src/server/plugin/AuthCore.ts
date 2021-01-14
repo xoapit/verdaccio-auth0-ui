@@ -14,16 +14,16 @@ export class AuthCore {
     private readonly config: Config,
   ) { }
 
-  createUser(username: string) {
+  createUser(username: string, groups: string[]) {
     return {
       name: username,
-      groups: [this.requiredGroup],
-      real_groups: [this.requiredGroup],
+      groups,
+      real_groups: groups,
     }
   }
 
-  async createUiCallbackUrl(username: string, token: string) {
-    const user: User = this.createUser(username)
+  async createUiCallbackUrl(username: string, groups: string[], token: string) {
+    const user: User = this.createUser(username, groups)
 
     const uiToken = await this.verdaccio.issueUiToken(user)
     const npmToken = await this.verdaccio.issueNpmToken(username, token)
@@ -43,9 +43,6 @@ export class AuthCore {
   }
 
   canAccess(username: string, groups: string[], requiredGroups: string[]) {
-    if (requiredGroups.includes("$authenticated")) {
-      requiredGroups.push(this.requiredGroup)
-    }
     const grantedAccess = intersection(groups, requiredGroups)
 
     const allow = grantedAccess.length === requiredGroups.length
