@@ -19,7 +19,6 @@ export function getSaveCommands(registry: string, token: string) {
   const baseUrl = url.host + url.pathname
   return [
     `npm config set //${baseUrl}:_authToken "${token}"`, // lgtm [js/command-line-injection]
-    `npm config set //${baseUrl}:always-auth true`,
   ]
 }
 
