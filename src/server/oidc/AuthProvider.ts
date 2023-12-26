@@ -59,11 +59,11 @@ export class OpenIDConnectAuthProvider implements AuthProvider {
     const params = JSON.parse(code) as CallbackParamsType
     const tokenSet = await this.discoveredClient.callback(callbackUrl, params)
 
-    if (tokenSet.access_token !== undefined) {
-      return tokenSet.access_token
+    if (tokenSet.id_token !== undefined) {
+      return tokenSet.id_token
     }
 
-    throw new Error("No access_token received in getToken callback")
+    throw new Error("No id_token received in getToken callback")
   }
 
   async getUsername(token: string): Promise<string> {
@@ -91,7 +91,7 @@ export class OpenIDConnectAuthProvider implements AuthProvider {
     const groups = claims[this.accessTokenPermissionsProperty] as string[]|undefined
 
     if (groups !== undefined) {
-      return groups
+      return ['oidc', ...groups]
     }
 
     throw Object.assign(
