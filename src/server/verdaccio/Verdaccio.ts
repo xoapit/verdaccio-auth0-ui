@@ -1,43 +1,45 @@
-import { Config } from "@verdaccio/types"
+import { Config } from "@verdaccio/types";
 
-import { Auth, User } from "../verdaccio"
-import { getSecurity } from "./verdaccio-4-auth-utils"
+import { Auth, User } from "../verdaccio";
+import { getSecurity } from "./verdaccio-4-auth-utils";
 
 function getBaseUrl(config: Config) {
-  const prefix = config.url_prefix
+  const prefix = config.url_prefix;
   if (prefix) {
-    return prefix.replace(/\/?$/, "") // Remove potential trailing slash
+    return prefix.replace(/\/?$/, ""); // Remove potential trailing slash
   }
-  return ""
+  return "";
 }
 
 /**
  * Abstract Verdaccio version differences and usage of all Verdaccio objects.
  */
 export class Verdaccio {
-  readonly baseUrl = getBaseUrl(this.config)
+  readonly baseUrl = getBaseUrl(this.config);
 
-  private auth!: Auth
+  private auth!: Auth;
 
-  constructor(
-    private readonly config: Config,
-  ) { }
+  constructor(private readonly config: Config) {}
 
   setAuth(auth: Auth) {
-    this.auth = auth
+    this.auth = auth;
   }
 
   async issueNpmToken(username: string, token: string) {
-    return this.encrypt(username + ":" + token)
+    return this.encrypt(username + ":" + token);
+  }
+
+  async issueApiToken(user: User) {
+    const jWTSignOptions = getSecurity(this.config).api.jwt?.sign || { expiresIn: "7d" };
+    return this.auth.jwtEncrypt(user, jWTSignOptions);
   }
 
   async issueUiToken(user: User) {
-    const jWTSignOptions = getSecurity(this.config).web.sign
-    return this.auth.jwtEncrypt(user, jWTSignOptions)
+    const jWTSignOptions = getSecurity(this.config).web.sign;
+    return this.auth.jwtEncrypt(user, jWTSignOptions);
   }
 
   private encrypt(text: string) {
-    return this.auth.aesEncrypt(new Buffer(text)).toString("base64")
+    return this.auth.aesEncrypt(new Buffer(text)).toString("base64");
   }
-
 }

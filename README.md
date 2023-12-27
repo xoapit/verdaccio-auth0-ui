@@ -27,7 +27,7 @@ If you would like to use this with Verdaccio 3-4, Node.js 10-13, or IE you can u
 ### Install
 
 ```
-$ npm install verdaccio-auth0-ui
+$ npm install verdaccio-auth0-ui2
 ```
 
 ### Auth0 Config
@@ -55,11 +55,11 @@ Merge the below options with your existing Verdaccio config:
 
 ```yml
 middlewares:
-  oidc-auth0-ui:
+  auth0-ui2:
     enabled: true
 
 auth:
-  oidc-auth0-ui:
+  auth0-ui2:
     org: REQUIRED_PERMISSION
     client-id: OIDC_CLIENT_ID
     client-secret: OIDC_CLIENT_SECRET
@@ -136,7 +136,7 @@ If you accidentally skipped this step, go to https://github.com/settings/applica
 The easiest way to configure npm is to use this short command:
 
 ```
-$ npx verdaccio-auth0-ui --registry http://localhost:4873
+$ npx verdaccio-auth0-ui2 --registry http://localhost:4873
 ```
 
 #### Option B) Copy commands from the UI

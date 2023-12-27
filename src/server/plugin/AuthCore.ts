@@ -26,7 +26,7 @@ export class AuthCore {
     const user: User = this.createUser(username, groups)
 
     const uiToken = await this.verdaccio.issueUiToken(user)
-    const npmToken = await this.verdaccio.issueNpmToken(username, token)
+    const npmToken = await this.verdaccio.issueApiToken(user)
 
     const query = { username, uiToken, npmToken }
     const url = "/?" + stringify(query)

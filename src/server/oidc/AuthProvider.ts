@@ -3,6 +3,7 @@ import { Issuer, Client, CallbackParamsType, TokenSet } from "openid-client"
 
 import { AuthProvider } from "../plugin/AuthProvider"
 import { Config, getConfig } from "../plugin/Config"
+import _ from "lodash"
 
 export class OpenIDConnectAuthProvider implements AuthProvider {
   private readonly issuerUrl = getConfig(this.config, "oidc-issuer-url") || ""
@@ -59,11 +60,11 @@ export class OpenIDConnectAuthProvider implements AuthProvider {
     const params = JSON.parse(code) as CallbackParamsType
     const tokenSet = await this.discoveredClient.callback(callbackUrl, params)
 
-    if (tokenSet.id_token !== undefined) {
-      return tokenSet.id_token
+    if (tokenSet.access_token !== undefined) {
+      return tokenSet.access_token
     }
 
-    throw new Error("No id_token received in getToken callback")
+    throw new Error("No access_token received in getToken callback")
   }
 
   async getUsername(token: string): Promise<string> {
@@ -71,7 +72,7 @@ export class OpenIDConnectAuthProvider implements AuthProvider {
     const username = userinfo[this.userinfoUsernameProperty] as string|undefined
 
     if (username !== undefined) {
-      return username
+      return username.split('@')[0].toLocaleLowerCase()
     }
 
     throw Object.assign(
@@ -88,10 +89,14 @@ export class OpenIDConnectAuthProvider implements AuthProvider {
       id_token: token,
     })
     const claims = tokenSet.claims()
-    const groups = claims[this.accessTokenPermissionsProperty] as string[]|undefined
+    const groups = claims[this.accessTokenPermissionsProperty] as string[]|undefined|string
 
     if (groups !== undefined) {
-      return ['oidc', ...groups]
+      if(_.isString(groups)) {
+        return ['$authenticated', '$all', groups]
+      } else {
+        return ['$authenticated', '$all', ...groups]
+      }
     }
 
     throw Object.assign(

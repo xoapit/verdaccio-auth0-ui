@@ -1,6 +1,6 @@
 {
-  "name": "verdaccio-auth0-ui",
-  "version": "4.0.1",
+  "name": "verdaccio-auth0-ui2",
+  "version": "4.0.8",
   "keywords": [
     "github",
     "login",
@@ -11,16 +11,16 @@
     "registry",
     "verdaccio"
   ],
-  "homepage": "https://github.com/matterway/verdaccio-auth0-ui/blob/master/README.md",
-  "bugs": "https://github.com/matterway/verdaccio-auth0-ui/issues",
-  "repository": "github:matterway/verdaccio-auth0-ui",
+  "homepage": "https://github.com/xoapit/verdaccio-auth0-ui/blob/master/README.md",
+  "bugs": "https://github.com/xoapit/verdaccio-auth0-ui/issues",
+  "repository": "github:xoapit/verdaccio-auth0-ui",
   "license": "MIT",
   "files": [
     "dist"
   ],
   "main": "dist/server.js",
   "bin": {
-    "verdaccio-auth0-ui": "dist/cli.js"
+    "verdaccio-auth0-ui2": "dist/cli.js"
   },
   "scripts": {
     "build": "bash run build",
