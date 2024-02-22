@@ -53,6 +53,7 @@ export function init(options: InitOptions) {
   const { loginButton, logoutButton, updateUsageInfo } = options
 
   interruptClick(loginButton, () => {
+    clearCredentials()
     location.href = loginHref
   })
 
