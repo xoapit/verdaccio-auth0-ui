@@ -49,6 +49,7 @@ export class OpenIDConnectAuthProvider implements AuthProvider {
       scope: "openid profile",
       redirect_uri: callbackUrl,
       audience: this.audience,
+      nonce: '',
     })
   }
 
