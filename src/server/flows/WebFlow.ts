@@ -1,41 +1,40 @@
-import { IPluginMiddleware } from "@verdaccio/types"
-import { Application, Handler, Request } from "express"
+import { IPluginMiddleware } from "@verdaccio/types";
+import { Application, Handler, Request } from "express";
 
-import { authorizePath, callbackPath } from "../../constants"
-import { logger } from "../../logger"
-import { buildStatusPage } from "../../statusPage"
-import { AuthCore } from "../plugin/AuthCore"
-import { AuthProvider } from "../plugin/AuthProvider"
-import { Verdaccio } from "../verdaccio"
+import { authorizePath, callbackPath } from "../../constants";
+import { logger } from "../../logger";
+import { buildStatusPage } from "../../statusPage";
+import { AuthCore } from "../plugin/AuthCore";
+import { AuthProvider } from "../plugin/AuthProvider";
+import { Verdaccio } from "../verdaccio";
 
 export const errorPage = buildStatusPage(`
   <h1>Access Denied</h1>
   <p>Not enough permissions to access registry.</p>
   <p><a href="/">Go back</a></p>
-`)
+`);
 
 export class WebFlow implements IPluginMiddleware<any> {
-
   static getAuthorizePath(id?: string) {
-    return authorizePath + "/" + (id || ":id?")
+    return authorizePath + "/" + (id || ":id?");
   }
 
   static getCallbackPath(id?: string) {
-    return callbackPath + (id ? "/" + id : "")
+    return callbackPath + (id ? "/" + id : "");
   }
 
   constructor(
     private readonly verdaccio: Verdaccio,
     private readonly core: AuthCore,
-    private readonly provider: AuthProvider,
-  ) { }
+    private readonly provider: AuthProvider
+  ) {}
 
   /**
    * IPluginMiddleware
    */
   register_middlewares(app: Application) {
-    app.get(WebFlow.getAuthorizePath(), this.authorize)
-    app.get(WebFlow.getCallbackPath(), this.callback)
+    app.get(WebFlow.getAuthorizePath(), this.authorize);
+    app.get(WebFlow.getCallbackPath(), this.callback);
   }
 
   /**
@@ -43,14 +42,20 @@ export class WebFlow implements IPluginMiddleware<any> {
    */
   authorize: Handler = async (req, res, next) => {
     try {
-      const redirectUrl = this.getRedirectUrl(req)
-      const url = await this.provider.getLoginUrl(redirectUrl)
-      res.redirect(url)
+      const redirectUrl = this.getRedirectUrl(req);
+      const url = await this.provider.getLoginUrl(redirectUrl);
+      res.redirect(url);
     } catch (error) {
-      logger.error(error)
-      next(error)
+      logger.error(error);
+      console.log("Cannot direct", error);
+
+      if (error?.["message"]?.includes("nonce")) {
+        res.redirect("/");
+        return;
+      }
+      next(error);
     }
-  }
+  };
 
   /**
    * After successful authentication, the auth provider redirects back to us.
@@ -68,32 +73,34 @@ export class WebFlow implements IPluginMiddleware<any> {
    */
   callback: Handler = async (req, res, next) => {
     try {
-      const code = await this.provider.getCode(req)
-      const token = await this.provider.getToken(code, this.getRedirectUrl(req))
-      const username = await this.provider.getUsername(token)
-      const groups = await this.provider.getGroups(token)
+      const code = await this.provider.getCode(req);
+      const token = await this.provider.getToken(code, this.getRedirectUrl(req));
+      const username = await this.provider.getUsername(token);
+      const groups = await this.provider.getGroups(token);
 
       if (this.core.canAuthenticate(username, groups)) {
-        const ui = await this.core.createUiCallbackUrl(username, groups, token)
-        res.redirect(ui)
+        const ui = await this.core.createUiCallbackUrl(username, groups, token);
+        res.redirect(ui);
       } else {
-        res.send(errorPage)
+        res.send(errorPage);
       }
     } catch (error) {
-      logger.error(error)
-      next(error)
+      logger.error(error);
+      console.log("Cannot handle callback", error);
+
+      res.redirect("/");
+      // next(error);
     }
-  }
+  };
 
   private getRedirectUrl(req: Request): string {
-    const baseUrl = this.verdaccio.baseUrl || this.getRequestOrigin(req)
-    const path = WebFlow.getCallbackPath(req.params.id)
-    return baseUrl + path
+    const baseUrl = this.verdaccio.baseUrl || this.getRequestOrigin(req);
+    const path = WebFlow.getCallbackPath(req.params.id);
+    return baseUrl + path;
   }
 
   private getRequestOrigin(req: Request) {
-    const protocal = req.get("X-Forwarded-Proto") || req.protocol
-    return protocal + "://" + req.get("host")
+    const protocal = req.get("X-Forwarded-Proto") || req.protocol;
+    return protocal + "://" + req.get("host");
   }
-
 }
