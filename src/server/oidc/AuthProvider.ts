@@ -18,7 +18,6 @@ export class OpenIDConnectAuthProvider implements AuthProvider {
   constructor(
     private readonly config: Config,
   ) {
-    // not sure of a better way to do this:
     this.discoverClient()
   }
 
@@ -73,7 +72,7 @@ export class OpenIDConnectAuthProvider implements AuthProvider {
     const username = userinfo[this.userinfoUsernameProperty] as string|undefined
 
     if (username !== undefined) {
-      return username.split('@')[0].toLocaleLowerCase()
+      return username.split('@')[0].toLowerCase()
     }
 
     throw Object.assign(
@@ -83,7 +82,6 @@ export class OpenIDConnectAuthProvider implements AuthProvider {
   }
 
   async getGroups(token: string): Promise<string[]> {
-    // Bounce token to check that it's valid.
     await this.discoveredClient.userinfo(token)
 
     const tokenSet = new TokenSet({

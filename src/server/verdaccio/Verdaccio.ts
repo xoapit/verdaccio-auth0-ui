@@ -1,4 +1,4 @@
-import { Config } from "@verdaccio/types";
+import { Config, RemoteUser } from "@verdaccio/types";
 
 import { Auth, User } from "../verdaccio";
 import { getSecurity } from "./verdaccio-4-auth-utils";
@@ -40,6 +40,23 @@ export class Verdaccio {
   }
 
   private encrypt(text: string) {
-    return this.auth.aesEncrypt(new Buffer(text)).toString("base64");
+    return this.auth.aesEncrypt(Buffer.from(text, "utf8")).toString("base64");
+  }
+
+  public createRemoteUser(name: string, pluginGroups: string[]): RemoteUser {
+    const isGroupValid: boolean = Array.isArray(pluginGroups);
+    const groups = (isGroupValid ? pluginGroups : []).concat([
+      "$all",
+      "all",
+      "$authenticated",
+      "@all",
+      "@authenticated",
+    ]);
+
+    return {
+      name,
+      groups,
+      real_groups: pluginGroups,
+    };
   }
 }

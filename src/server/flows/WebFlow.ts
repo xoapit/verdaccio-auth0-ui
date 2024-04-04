@@ -47,7 +47,7 @@ export class WebFlow implements IPluginMiddleware<any> {
       res.redirect(url);
     } catch (error) {
       logger.error(error);
-      console.log("Cannot direct", error);
+      console.log("CANNOT_REDIRECT", error);
 
       if (error?.["message"]?.includes("nonce")) {
         res.redirect("/");
@@ -86,10 +86,9 @@ export class WebFlow implements IPluginMiddleware<any> {
       }
     } catch (error) {
       logger.error(error);
-      console.log("Cannot handle callback", error);
+      console.log("CANNOT_HANDLE_CALLBACK", error);
 
       res.redirect("/");
-      // next(error);
     }
   };
 

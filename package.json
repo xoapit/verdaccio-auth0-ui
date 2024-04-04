@@ -1,6 +1,6 @@
 {
   "name": "verdaccio-auth0-ui2",
-  "version": "4.0.14",
+  "version": "4.0.37",
   "keywords": [
     "github",
     "login",
@@ -38,7 +38,8 @@
   },
   "dependencies": {
     "chalk": "^3.0.0",
-    "express": "^4.17.0",
+    "dayjs": "^1.11.10",
+    "express": "4.19.2",
     "global-agent": "^2.1.5",
     "got": "^10.4.0",
     "memory-cache": "^0.2.0",

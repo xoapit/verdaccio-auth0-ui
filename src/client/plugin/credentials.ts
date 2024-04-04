@@ -5,33 +5,29 @@
 //
 
 export interface Credentials {
-  username: string
-  uiToken: string
-  npmToken: string
+  username: string;
+  uiToken: string;
+  npmToken: string;
 }
 
-export function saveCredentials(credentials: Credentials) {
-  localStorage.setItem("username", credentials.username)
-  localStorage.setItem("token", credentials.uiToken)
-  localStorage.setItem("npm", credentials.npmToken)
+export function saveCredentials(credentials: Credentials & { defaultScope?: string }) {
+  localStorage.setItem("username", credentials.username);
+  localStorage.setItem("token", credentials.uiToken);
+  localStorage.setItem("npm", credentials.npmToken);
+  localStorage.setItem("defaultScope", credentials.defaultScope || '');
 }
 
 export function clearCredentials() {
-  localStorage.removeItem("username")
-  localStorage.removeItem("token")
-  localStorage.removeItem("npm")
+  localStorage.removeItem("username");
+  localStorage.removeItem("token");
+  localStorage.removeItem("npm");
+  localStorage.removeItem("defaultScope");
 }
 
 export function isLoggedIn() {
-  return true
-    && !!localStorage.getItem("username")
-    && !!localStorage.getItem("token")
-    && !!localStorage.getItem("npm")
+  return true && !!localStorage.getItem("username") && !!localStorage.getItem("token") && !!localStorage.getItem("npm");
 }
 
 export function validateCredentials(credentials: Credentials) {
-  return true
-    && credentials.username
-    && credentials.uiToken
-    && credentials.npmToken
+  return true && credentials.username && credentials.uiToken && credentials.npmToken;
 }

@@ -9,7 +9,7 @@ function updateUsageInfo(): void {
   const tabs = document.querySelectorAll(tabSelector)
   if (!tabs) return
 
-  const usageInfoLines = getUsageInfo().split("\n").reverse()
+  const usageInfoLines = getUsageInfo().split("\n")
 
   tabs.forEach((tab) => {
     const alreadyReplaced = tab.getAttribute("replaced") === "true"

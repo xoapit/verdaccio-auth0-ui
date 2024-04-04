@@ -68,6 +68,12 @@ auth:
     oidc-audience: https://yourprivateregistry.com/
     oidc-userinfo-nickname-property: nickname
     oidc-access-token-permissions-property: permissions
+    
+    default-scope: 'nestjs'
+    static-access-token:
+      - token: ACCESS_TOKEN
+        user: john_doe
+        expirationDate: "2024-12-31"
 
 url_prefix: YOUR_REGISTRY_URL
 ```
@@ -102,7 +108,6 @@ Permissions property stored in `access_token`. Defaults to `permissions`
 #### `url_prefix` (optional)
 
 If configured, it must match `YOUR_REGISTRY_URL`. See [GitHub Config](#GitHub-Config).
-
 
 ### Proxy Config
 
@@ -146,7 +151,6 @@ $ npx verdaccio-auth0-ui2 --registry http://localhost:4873
 Open the "Register Info" dialog and klick "Copy to clipboard":
 
 ![](screenshots/register-info.png)
-
 
 - Run the copied commands on your terminal:
 
