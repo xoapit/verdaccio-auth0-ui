@@ -27,6 +27,8 @@ export interface PluginConfig {
   "oidc-userinfo-nickname-property"?: string;
   "oidc-access-token-permissions-property"?: string;
 
+  "cookie-domain"?: string;
+
   "default-scope"?: string;
 
   "static-access-token"?: StaticAccessToken[];

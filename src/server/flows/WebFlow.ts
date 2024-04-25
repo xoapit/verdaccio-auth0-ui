@@ -36,9 +36,13 @@ export class WebFlow implements IPluginMiddleware<any> {
     app.get(WebFlow.getAuthorizePath(), this.authorize);
     app.get(WebFlow.getCallbackPath(), this.callback);
     app.get(logoutPath, (req, res, next) => {
-      res.cookie("token", null, { expires: new Date(Date.now() - 10000000), httpOnly: true });
-      res.redirect('/');
-    })
+      res.cookie("npm-auth", null, {
+        domain: this.provider.getCookieDomain(),
+        expires: new Date(Date.now() - 10000000),
+        httpOnly: true,
+      });
+      res.redirect("/");
+    });
   }
 
   /**
@@ -84,7 +88,11 @@ export class WebFlow implements IPluginMiddleware<any> {
 
       if (this.core.canAuthenticate(username, groups)) {
         const ui = await this.core.createUiCallbackUrl(username, groups, token);
-        res.cookie("token", token, { maxAge: 24 * 60 * 1000, httpOnly: true });
+        res.cookie("npm-auth", "true", {
+          domain: this.provider.getCookieDomain(),
+          maxAge: 24 * 60 * 1000,
+          httpOnly: true,
+        });
         res.redirect(ui);
       } else {
         res.send(errorPage);

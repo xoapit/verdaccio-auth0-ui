@@ -39,6 +39,10 @@ export class OpenIDConnectAuthProvider implements AuthProvider {
     this.client = client
   }
 
+  getCookieDomain(): string | undefined {
+    return getConfig(this.config, "cookie-domain") || undefined
+  }
+
   getId(): string {
     return "auth0"
   }
