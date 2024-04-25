@@ -1,2 +1,2 @@
 export const loginHref = "/-/oauth/authorize"
-export const logoutHref = "/"
+export const logoutHref = "/logout"

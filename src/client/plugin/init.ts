@@ -55,10 +55,6 @@ export function init(options: InitOptions) {
     console.log('clicked logged out');
     clearCredentials();
     location.href = logoutHref;
-    setTimeout(function () {
-      console.log("logged out");
-      location.reload();
-    }, 100);
   });
 
   document.addEventListener("click", () => retry(updateUsageInfo));

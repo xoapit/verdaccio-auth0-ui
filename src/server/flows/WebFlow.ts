@@ -1,7 +1,7 @@
 import { IPluginMiddleware } from "@verdaccio/types";
 import { Application, Handler, Request } from "express";
 
-import { authorizePath, callbackPath } from "../../constants";
+import { authorizePath, callbackPath, logoutPath } from "../../constants";
 import { logger } from "../../logger";
 import { buildStatusPage } from "../../statusPage";
 import { AuthCore } from "../plugin/AuthCore";
@@ -35,6 +35,10 @@ export class WebFlow implements IPluginMiddleware<any> {
   register_middlewares(app: Application) {
     app.get(WebFlow.getAuthorizePath(), this.authorize);
     app.get(WebFlow.getCallbackPath(), this.callback);
+    app.get(logoutPath, (req, res, next) => {
+      res.cookie("token", null, { expires: new Date(Date.now() - 10000000), httpOnly: true });
+      res.redirect('/');
+    })
   }
 
   /**
@@ -80,6 +84,7 @@ export class WebFlow implements IPluginMiddleware<any> {
 
       if (this.core.canAuthenticate(username, groups)) {
         const ui = await this.core.createUiCallbackUrl(username, groups, token);
+        res.cookie("token", token, { maxAge: 24 * 60 * 1000, httpOnly: true });
         res.redirect(ui);
       } else {
         res.send(errorPage);

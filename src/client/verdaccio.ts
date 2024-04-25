@@ -52,6 +52,6 @@ function updateUsageInfo(): void {
 
 init({
   loginButton: `[data-testid="header--button-login"]`,
-  logoutButton: `[data-testid="header--button-logout"]`,
+  logoutButton: `[data-testid="logOutDialogIcon"]`,
   updateUsageInfo,
 })
